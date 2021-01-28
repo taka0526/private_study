@@ -9,63 +9,63 @@ import requests
 class Google(object):
     def __init__(self):
         self.GOOGLE_SERCH_URL = "https://www.google.co.jp/search"
-        self.session = requests()
+        self.session = requests.session()
         self.session.headers.update(
             {
-                "User-Agent": "Mozilla/5.0 (X11; Linax x86_64; rv:10.0)" \
+                 "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:10.0) \
                     Gecko/20100101 Firefox/10.0"
             }
         )
 
-def search(self, keyword, maximum):
-    print(f"Begining searching {keyword}")
-    query = self.query_gen(keyword)
-    return self.image_search(query, maximum)
+    def search(self, keyword, maximum):
+        print(f"Begining searching {keyword}")
+        query = self.query_gen(keyword)
+        return self.image_search(query, maximum)
 
-def query_gen(self, keyword):
-    #search query generator
-    page = 0
-    while True:
-        params = urllib.parse.urlencode(
-            {"q": keyword, "tbm": "isch", "ijn": str(page)}
-        )
+    def query_gen(self, keyword):
+        #search query generator
+        page = 0
+        while True:
+            params = urllib.parse.urlencode(
+                {"q": keyword, "tbm": "isch", "ijn": str(page)}
+            )
 
-        yield self.GOOGLE_SERCH_URL + "?" + params
-        page += 1
+            yield self.GOOGLE_SERCH_URL + "?" + params
+            page += 1
 
-def image_search(self, query_gen, maximum):
-    results = []
-    total = 0
-    while True:
-        #serch
-        html = self.session.get(next(query_gen)).text
-        soup = BeautifulSoup(html, "lxml")
-        elements = soup.select(".rg_meta.notranslate")
-        json = [json.loads(e.get_text()) for e in elements]
-        image_url_list = [js["ou"] for js in jsons]
+    def image_search(self, query_gen, maximum):
+        results = []
+        total = 0
+        while True:
+            #serch
+            html = self.session.get(next(query_gen)).text
+            soup = BeautifulSoup(html, "lxml")
+            elements = soup.select(".rg_meta.notranslate")
+            jsons = [json.loads(e.get_text()) for e in elements]
+            image_url_list = [js["ou"] for js in jsons]
 
-        #add search results
-        if not len(image_url_list):
-            print("-> No more images")
-            break
-        elif len(image_url_list) > maximum - total:
-            results += image_url_list[: maximum - total]
-            break
-        else:
-            results += image_url_list
-            total += len(image_url_list)
-    
-    print("-> Found", str(len(results)), "images")
-    return results
+            #add search results
+            if not len(image_url_list):
+                print("-> No more images")
+                break
+            elif len(image_url_list) > maximum - total:
+                results += image_url_list[: maximum - total]
+                break
+            else:
+                results += image_url_list
+                total += len(image_url_list)
+        
+        print("-> Found", str(len(results)), "images")
+        return results
 
 
 def main():
-    perser = argparse.ArgumentParser(argument_default=argparse.SUPPRESS)
-    parse.add_argument("-t", "--target", help="target name", type=str, required=True)
+    parser = argparse.ArgumentParser(argument_default=argparse.SUPPRESS)
+    parser.add_argument("-t", "--target", help="target name", type=str, required=True)
     parser.add_argument(
         "-n", "--number", help="number of images", type=int, required=True
     )
-    perser.add_argument(
+    parser.add_argument(
         "-d", "--directory", help="download location", type=str, default="./data"
     )
     parser.add_argument(
@@ -76,13 +76,13 @@ def main():
         default=False,
     )
 
-    args = perser.parse_args()
+    args = parser.parse_args()
 
     data_dir = args.directory
     target_name = args.target
 
-    os.makedirs(date_dir, exits_ok=True)
-    os.makedirs)(os.path.join(data_dir, target_name), exits_ok=args.force)
+    os.makedirs(data_dir, exist_ok=True)
+    os.makedirs(os.path.join(data_dir, target_name), exist_ok=args.force)
 
     google = Google()
 
